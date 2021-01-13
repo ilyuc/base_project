@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds" debug="false">+
+
+    <!-- clr的报错 -->
+    <!--    <include resource="org/springframework/boot/logging/logback/defaults.xml" />-->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+
+    <!--读取配置中心的属性-->
+    <!--<springProperty scope="context" name="name" source="spring.application.name"/>可行-->
+
+    <!--日志输出位置-->
+    <property name="LOG_HOME" value="D:\log"/>
+
+    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+    <property name="LOG_PATTERN_CONSOLE"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %clr(${LOG_LEVEL_PATTERN:-%5p}) %logger{50}:%L - %msg%n"/>
+
+    <property name="LOG_PATTERN_FILE"
+              value="%msg%n"/>
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+<!--        注释掉后控制台打印，按照 root 里的级别 -->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            <level>info</level>-->
+<!--        </filter>-->
+        <encoder>
+            <pattern>
+                ${LOG_PATTERN_CONSOLE}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!--输出到文件-->
+    <appender name="fileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>D:\log/%d{yyyyMMdd}/myLogInfo.%d{yyyyMMdd}.%i.log</FileNamePattern>
+            <!--单个日志大小-->
+            <maxFileSize>10KB</maxFileSize>
+            <!--日志文件保留天数-->
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN_CONSOLE}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fileLogError" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>error</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>D:\log/%d{yyyyMMdd}/myLogError.%d{yyyyMMdd}.%i.log</FileNamePattern>
+            <!--单个日志大小-->
+            <maxFileSize>10KB</maxFileSize>
+            <!--日志文件保留天数-->
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN_CONSOLE}</pattern>
+        </encoder>
+    </appender>
+
+    <!--配置异步日志-->
+    <appender name="consoleName" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="console"/>
+    </appender>
+    <appender name="fileLogName" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="fileLog"/>
+    </appender>
+    <appender name="fileLogErrorName" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="fileLogError"/>
+    </appender>
+
+    <!-- 日志在工程中的输出位置 -->
+    <!--<property name="LOG_FILE" value="${LOG_HOME}/${name}"/>-->
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+        <!--日志输出文件 -->
+        <appender-ref ref="fileLog"/>
+        <appender-ref ref="fileLogError"/>
+    </root>
+
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.Statement" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+</configuration>
+

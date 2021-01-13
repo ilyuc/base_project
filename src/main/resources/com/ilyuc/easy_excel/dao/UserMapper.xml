@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ilyuc.easy_excel.dao.UserMapper">
+
+    <!-- 开启别名配置，就可以直接使用驼峰格式的实体类名 -->
+<!-- <resultMap type="com.ilyuc.easy_excel.entity.UserEntity" id="CountDataResult">-->
+    <resultMap type="UserEntity" id="CountDataResult">
+        <result property="name" column="name" javaType="String"/>
+        <result property="alisa" column="alisa" javaType="String"/>
+        <result property="age" column="age" javaType="int"/>
+        <result property="hall" column="hall" javaType="String"/>
+        <result property="sex" column="sex" javaType="String"/>
+        <result property="weight" column="weight" javaType="double"/>
+        <result property="email" column="email" javaType="String"/>
+    </resultMap>
+
+    <select id="getUser" parameterType="UserEntity" resultMap="CountDataResult">
+        select
+        *
+        from user t where 1=1
+
+        <if test="name!=null and name!=''">
+            and instr(t.name, #{name} )<![CDATA[ > ]]>0
+        </if>
+        <if test="alisa!=null and alisa!=''">
+            and instr(t.alisa, #{alisa} )<![CDATA[ > ]]>0
+        </if>
+        <if test="email!=null and email!=''">
+            and instr(t.email, #{email} )<![CDATA[ > ]]>0
+        </if>
+
+    </select>
+
+</mapper>
